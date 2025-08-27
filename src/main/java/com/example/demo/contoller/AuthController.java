@@ -10,6 +10,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,8 +57,12 @@ public class AuthController {
                     .build();
 
             response.addHeader("Set-Cookie", cookie.toString());
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("message", "Login successful");
+            responseBody.put("access_token", jwt);
+            responseBody.put("role", user.getRole());
 
-            return ResponseEntity.ok("Login successful");
+            return ResponseEntity.ok(responseBody);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials: " + e.getMessage());

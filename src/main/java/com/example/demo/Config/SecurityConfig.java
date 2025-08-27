@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 "/project/admin/updateProject/{id}","/project/admin/deleteProject/{id}").hasRole("Admin")
                         .requestMatchers("/project_user/admin/UserDetail/{projectId}","/project_user/admin/ProjectDetail/{userId}",
                                 "/project_user/admin/add").hasRole("Admin")
-                        .requestMatchers("/task_User/admin/UserDetails/{taskId}","/task_User/admin/TaskDetails/{userId}",
+                        .requestMatchers("/task_User/admin/UserDetails/{taskId}","/task_User/admin/TaskDetails/{taskId}",
                                 "/task_User/admin/add").hasRole("Admin")
 
 
