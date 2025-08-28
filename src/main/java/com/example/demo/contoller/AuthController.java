@@ -29,7 +29,7 @@ public class AuthController {
         try {
             User newUser = userService.registerUser(user);
             if(newUser == null){
-                return ResponseEntity.ok("User already exists");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User already exist");
             }
             return ResponseEntity.ok("User registered successfully with ID: " + newUser.getId());
         } catch (Exception e) {

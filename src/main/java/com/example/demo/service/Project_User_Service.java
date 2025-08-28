@@ -32,22 +32,24 @@ public class Project_User_Service {
                 .map(Project_User::getProjectId).toList();
     }
 
-    public String AddProjectAndUser(@RequestBody Project_User_Dto project_User_Dto){
-        if(!projectService.existsByProjectId(project_User_Dto.getProjectId())){
-            return "project id not exits";
-        }
-        if(!userService.existsById(project_User_Dto.getUserId())){
-            return "user id not exits";
-        }
-        if(project_User_repository.existsById(project_User_Dto.getUserId()) && project_User_repository.existsById(project_User_Dto.getProjectId())){
-            return "already exists";
-        }
-        Project_User project_User = new Project_User();
-        project_User.setProjectId(project_User_Dto.getProjectId());
-        project_User.setUserId(project_User_Dto.getUserId());
-        project_User_repository.save(project_User);
+    public String AddProjectAndUser(Project_User_Dto dto) {
+        System.out.println("Assigning project " + dto.getProjectId() + " to user " + dto.getUserId());
+
+        if(!projectService.existsByProjectId(dto.getProjectId())) return "Project does not exist";
+        if(!userService.existsById(dto.getUserId())) return "User does not exist";
+
+        if(project_User_repository.existsByUserIdAndProjectId(dto.getUserId(), dto.getProjectId()))
+            return "Assignment already exists";
+
+        Project_User pu = new Project_User();
+        pu.setProjectId(dto.getProjectId());
+        pu.setUserId(dto.getUserId());
+
+        project_User_repository.save(pu);
         return "success";
     }
+
+
 
     public String getProjectForLoggedInUser() throws Exception{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
