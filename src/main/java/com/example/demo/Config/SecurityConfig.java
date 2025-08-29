@@ -27,7 +27,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> {})
                 .authorizeHttpRequests(auth-> auth
-                        .requestMatchers("/api/auth/signup", "/api/auth/login","/user/my_details").permitAll()
+                        .requestMatchers("/api/auth/signup", "/api/auth/login","/user/my_details","/api/file/upload").permitAll()
 
                         .requestMatchers("/user/admin/getAllUser","/user/admin/getUser/{id}",
                                 "/user/admin/newUser","/user/admin/updateUser/{id}","/user/admin/deleteUser/{id}","/user/admin/role",
@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 "/project_user/admin/add").hasRole("Admin")
                         .requestMatchers("/task_User/admin/UserDetails/{taskId}","/task_User/admin/TaskDetails/{taskId}",
                                 "/task_User/admin/add").hasRole("Admin")
+                        .requestMatchers("/api/email/send").hasRole("Admin")
 
 
                         .requestMatchers("/updateMy_Details").hasAnyRole("Admin", "User")

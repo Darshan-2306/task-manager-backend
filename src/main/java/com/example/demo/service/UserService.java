@@ -163,6 +163,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public String getEmailById(int id) {
+        return userRepository.findEmailById(id);
+    }
+
 
 
 
