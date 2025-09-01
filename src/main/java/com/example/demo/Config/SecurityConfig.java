@@ -27,7 +27,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> {})
                 .authorizeHttpRequests(auth-> auth
-                        .requestMatchers("/api/auth/signup", "/api/auth/login","/user/my_details","/api/file/upload").permitAll()
+                        .requestMatchers("/api/auth/signup", "/api/auth/login","/user/my_details","/api/file/upload","/sftp/list","/sftp/upload","/sftp/delete").permitAll()
 
                         .requestMatchers("/user/admin/getAllUser","/user/admin/getUser/{id}",
                                 "/user/admin/newUser","/user/admin/updateUser/{id}","/user/admin/deleteUser/{id}","/user/admin/role",
