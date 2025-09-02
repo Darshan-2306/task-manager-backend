@@ -8,6 +8,7 @@ import org.springframework.integration.sftp.session.SftpRemoteFileTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -74,6 +75,38 @@ public class SftpService {
             session.remove(remotePath); // delete the file on the SFTP server
             System.out.println("Deleted file: " + remotePath);
             return null;
+        });
+    }
+
+    public void downloadFile(String remoteFileName, String localFilePath) throws Exception {
+        boolean exits = RemoteFileExists(remoteFileName);
+        if (!exits) {
+            System.out.println("file does not exist");
+            throw new Exception("Remote file " + remoteFileName + " does not exist");
+        }
+        sftpTemplate.execute(session -> {
+            String remotePath = sftpConfig.getRemoteDir() + "/" + remoteFileName;
+            System.out.println("Trying to download from: " + remotePath);
+
+            try(FileOutputStream fos = new FileOutputStream(localFilePath)) {
+                session.read(remotePath,fos);
+                System.out.println("Downloaded"+remotePath+" -> " +localFilePath);
+            }
+            return null;
+        });
+    }
+
+    public boolean RemoteFileExists(String remoteFileName) throws Exception {
+        return sftpTemplate.execute(session -> {
+            String baseDir = sftpConfig.getRemoteDir().replaceAll("/$", "");
+            String remotePath = baseDir + "/" + remoteFileName;
+            try{
+                session.exists(remotePath);
+                return true;
+            }
+            catch (Exception e){
+                return false;
+            }
         });
     }
 

@@ -1,5 +1,6 @@
 package com.example.demo.contoller;
 
+import com.example.demo.dto.SftpDownload_Dto;
 import com.example.demo.service.SftpService;
 import lombok.RequiredArgsConstructor;
 import org.apache.sshd.sftp.client.SftpClient;
@@ -21,7 +22,7 @@ public class SftpController {
 
     @GetMapping("/list")
     public List<String> listFiles() throws Exception {
-        return sftpService.listFiles(); // Spring Boot automatically converts List<String> to JSON
+        return sftpService.listFiles();
     }
 
 
@@ -32,12 +33,11 @@ public class SftpController {
             @RequestParam(value = "remoteName", required = false) String remoteName
     ) {
         try {
-            // Determine remote file name
+
             String remoteFileName = (remoteName != null && !remoteName.isEmpty())
                     ? remoteName
                     : file.getOriginalFilename();
 
-            // Save multipart file temporarily
             File tempFile = File.createTempFile("upload-", "-" + file.getOriginalFilename());
             try (FileOutputStream fos = new FileOutputStream(tempFile)) {
                 fos.write(file.getBytes());
@@ -65,4 +65,18 @@ public class SftpController {
             return ResponseEntity.status(500).body("Failed to delete file: " + e.getMessage());
         }
     }
+
+    @PostMapping("/download")
+    public ResponseEntity<String> downloadFile(@RequestBody SftpDownload_Dto request) {
+        try{
+            sftpService.downloadFile(request.getRemoteFileName(),request.getLocalPath());
+            return ResponseEntity.ok("File downloaded successfully: " + request.getLocalPath());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Failed to download file: " + e.getMessage());
+        }
+    }
+
+
 }
