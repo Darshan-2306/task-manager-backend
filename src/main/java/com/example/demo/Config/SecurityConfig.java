@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .authorizeHttpRequests(auth-> auth
                         .requestMatchers("/api/auth/signup", "/api/auth/login","/user/my_details","/api/file/upload","/sftp/list","/sftp/upload","/sftp/delete"
-                        ,"/sftp/download").permitAll()
+                        ,"/sftp/download","/sftp/download-zip").permitAll()
 
                         .requestMatchers("/user/admin/getAllUser","/user/admin/getUser/{id}",
                                 "/user/admin/newUser","/user/admin/updateUser/{id}","/user/admin/deleteUser/{id}","/user/admin/role",

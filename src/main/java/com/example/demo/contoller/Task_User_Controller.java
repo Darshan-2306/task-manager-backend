@@ -2,11 +2,13 @@ package com.example.demo.contoller;
 
 import com.example.demo.dto.Task_User_Dto;
 import com.example.demo.model.Task;
+import com.example.demo.model.Task_User;
 import com.example.demo.model.User;
 import com.example.demo.repository.Task_User_Repository;
 import com.example.demo.service.TaskService;
 import com.example.demo.service.Task_User_Service;
 import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,10 @@ public class Task_User_Controller {
     private final Task_User_Service task_User_Service;
     private final UserService userService;
     public final TaskService taskService;
+
+    @Autowired
+    public Task_User_Repository  task_User_Repository;
+
 
     public Task_User_Controller(Task_User_Service task_User_Service,UserService userService,TaskService taskService) {
         this.task_User_Service = task_User_Service;
@@ -63,6 +69,16 @@ public class Task_User_Controller {
         {
             e.printStackTrace(); // log the real exception
             return null;
+        }
+    }
+
+    @DeleteMapping("/admin/delete")
+    public String deleteTaskAndUser(@RequestBody Task_User_Dto task_User_Dto) {
+        if(task_User_Repository.deleteByUserIds(task_User_Dto.getTaskId(),task_User_Dto.getUserId())){
+            return "success";
+        }
+        else{
+            return "fail";
         }
     }
 

@@ -4,7 +4,9 @@ import com.example.demo.dto.SftpDownload_Dto;
 import com.example.demo.service.SftpService;
 import lombok.RequiredArgsConstructor;
 import org.apache.sshd.sftp.client.SftpClient;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,6 +77,21 @@ public class SftpController {
         catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(500).body("Failed to download file: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/download-zip")
+    public ResponseEntity<byte[]> downloadZipFile(@RequestBody List<String> remoteFilename) {
+        try{
+            byte[] zipBytes = sftpService.downloadAndZip(remoteFilename);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(zipBytes);
+        }
+        catch (Exception e){
+            return  ResponseEntity.internalServerError()
+                    .body(("Error: " + e.getMessage()).getBytes());
         }
     }
 
