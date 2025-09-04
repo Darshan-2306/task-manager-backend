@@ -77,14 +77,9 @@ public class Task_User_Service {
                 .map(String::valueOf)
                 .collect(Collectors.joining(" "));
         return taskIds;
-//        if(!taskIds.equals("")) {
-//            return "Task assigned to user id: " + userId + " is task id " + taskIds;
-//        }
-//        else {
-//            return "No task is assigned to user id:"+userId;
-//        }
-
     }
+
+
 
 
 

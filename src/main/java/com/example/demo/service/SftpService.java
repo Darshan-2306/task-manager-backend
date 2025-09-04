@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.sftp.session.SftpRemoteFileTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -48,16 +45,20 @@ public class SftpService {
     }
 
 
-    public void upload(String localFilePath, String remoteFileName) throws Exception {
-        try (FileInputStream fis = new FileInputStream(localFilePath)) {
-            sftpTemplate.execute(session -> {
-                String remotePath = sftpConfig.getRemoteDir() + "/" + remoteFileName;
-                session.write(fis, remotePath);
-                System.out.println(" Uploaded " + localFilePath + " → " + remotePath);
-                return null;
-            });
-        }
+    public void upload(InputStream inputStream, String remoteFileName) throws Exception {
+        sftpTemplate.execute(session -> {
+            String remotePath = sftpConfig.getRemoteDir() + "/" + remoteFileName;
+
+            // Send the inputStream directly to remote path
+            session.write(inputStream, remotePath);
+
+            System.out.println("Uploaded → " + remotePath);
+            return null;
+        });
     }
+
+
+
 
     public List<String> listFiles() throws Exception {
         return sftpTemplate.execute(session -> {
@@ -78,7 +79,7 @@ public class SftpService {
     public void deleteFile(String remoteFileName) throws Exception {
         sftpTemplate.execute(session -> {
             String remotePath = sftpConfig.getRemoteDir() + "/" + remoteFileName;
-            session.remove(remotePath); // delete the file on the SFTP server
+            session.remove(remotePath);
             System.out.println("Deleted file: " + remotePath);
             return null;
         });
@@ -92,8 +93,6 @@ public class SftpService {
         }
         sftpTemplate.execute(session -> {
             String remotePath = sftpConfig.getRemoteDir() + "/" + remoteFileName;
-            System.out.println("Trying to download from: " + remotePath);
-
             try(FileOutputStream fos = new FileOutputStream(localFilePath)) {
                 session.read(remotePath,fos);
                 System.out.println("Downloaded"+remotePath+" -> " +localFilePath);
@@ -116,26 +115,27 @@ public class SftpService {
         });
     }
 
-    public byte[] downloadAndZip(List<String> remoteFileNames) throws Exception {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try(ZipOutputStream zos = new ZipOutputStream(bos)) {
+    public void downloadAndZip(List<String> remoteFileNames, OutputStream outputStream) throws Exception {
+        try (ZipOutputStream zos = new ZipOutputStream(outputStream)) {
             for (String remoteFileName : remoteFileNames) {
                 sftpTemplate.execute(session -> {
                     String remotePath = sftpConfig.getRemoteDir() + "/" + remoteFileName;
-                    try(InputStream is = session.readRaw(remotePath)) {
+                    try (InputStream is = session.readRaw(remotePath)) {
                         zos.putNextEntry(new ZipEntry(remoteFileName));
-                        is.transferTo(zos);
+                        byte[] buffer = new byte[1024 * 1024]; // 1MB chunks
+                        int bytesRead;
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            zos.write(buffer, 0, bytesRead);
+                        }
+
                         zos.closeEntry();
-                        System.out.println("Added to zip file : "+ remoteFileName);
-                    }
-                    catch (Exception e) {
-                        throw new RuntimeException("Failed to read " + remoteFileName, e);
+                        System.out.println("Added to zip: " + remoteFileName);
                     }
                     return null;
                 });
             }
         }
-        return bos.toByteArray();
     }
+
 
 }

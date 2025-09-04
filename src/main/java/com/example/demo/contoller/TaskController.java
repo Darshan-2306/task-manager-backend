@@ -2,6 +2,7 @@ package com.example.demo.contoller;
 
 import com.example.demo.dto.Task_Dto;
 import com.example.demo.model.Task;
+import com.example.demo.repository.TaskRepository;
 import com.example.demo.service.ProjectService;
 import com.example.demo.service.TaskService;
 import org.springframework.http.HttpStatus;
@@ -15,9 +16,10 @@ import java.util.List;
 public class TaskController {
 
     private final TaskService taskService;
-
-    public TaskController(TaskService taskService) {
+    private final TaskRepository taskRepository;
+    public TaskController(TaskService taskService, TaskRepository taskRepository) {
         this.taskService = taskService;
+        this.taskRepository = taskRepository;
     }
 
     //get
@@ -71,6 +73,19 @@ public class TaskController {
     public List<Task> findTaskByProjectId(@PathVariable Integer project_id) {
         return taskService.findAllByProjectId(project_id);
     }
+
+
+    @DeleteMapping("/admin/deleteByProject")
+    public String deleteByProject(@RequestBody Integer projectId) {
+        if((taskRepository.deleteByProjectId(projectId))>0)
+        {
+            return "success";
+        }
+        else {
+            return "error";
+        }
+    }
+
 
 
 }

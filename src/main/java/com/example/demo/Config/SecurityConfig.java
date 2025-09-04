@@ -39,9 +39,9 @@ public class SecurityConfig {
                         .requestMatchers("/project/admin/getAllProject","/project/admin/getProjectById/{id}","/project/admin/addNewProject",
                                 "/project/admin/updateProject/{id}","/project/admin/deleteProject/{id}").hasRole("Admin")
                         .requestMatchers("/project_user/admin/UserDetail/{projectId}","/project_user/admin/ProjectDetail/{userId}",
-                                "/project_user/admin/add").hasRole("Admin")
+                                "/project_user/admin/add","/project_user/admin/delete","/project_user/admin/deleteByUser","project_user/admin/deleteByProject").hasRole("Admin")
                         .requestMatchers("/task_User/admin/UserDetails/{taskId}","/task_User/admin/TaskDetails/{taskId}",
-                                "/task_User/admin/add").hasRole("Admin")
+                                "/task_User/admin/add","/task_User/admin/deleteByUser","/task_User/admin/deleteByProj").hasRole("Admin")
                         .requestMatchers("/api/email/send").hasRole("Admin")
 
 

@@ -1,9 +1,12 @@
 package com.example.demo.contoller;
 
+import com.example.demo.dto.Project_User_Dto;
+import com.example.demo.dto.Task_Dto;
 import com.example.demo.dto.Task_User_Dto;
 import com.example.demo.model.Task;
 import com.example.demo.model.Task_User;
 import com.example.demo.model.User;
+import com.example.demo.repository.TaskRepository;
 import com.example.demo.repository.Task_User_Repository;
 import com.example.demo.service.TaskService;
 import com.example.demo.service.Task_User_Service;
@@ -24,6 +27,8 @@ public class Task_User_Controller {
     private final UserService userService;
     public final TaskService taskService;
 
+    @Autowired
+    public TaskRepository taskRepository;
     @Autowired
     public Task_User_Repository  task_User_Repository;
 
@@ -81,6 +86,51 @@ public class Task_User_Controller {
             return "fail";
         }
     }
+
+
+    @DeleteMapping("/admin/deleteByUser")
+    public String deleteByUser(@RequestBody Project_User_Dto project_User_Dto) {
+        if(task_User_Repository.deleteByUserId(project_User_Dto.getUserId()) > 0)
+        {
+            return "success";
+        }
+        else{
+            return "fail";
+        }
+    }
+
+
+    @DeleteMapping("/admin/deleteByTask")
+    public String deleteByTask(@RequestBody Task_User_Dto task_User_Dto) {
+        if(task_User_Repository.deleteByTask(task_User_Dto.getTaskId()) > 0){
+            return "success";
+        }
+        else{
+            return "fail";
+        }
+    }
+
+    @DeleteMapping("/admin/deleteByProj")
+    public String deleteByProj(@RequestBody Project_User_Dto project_User_Dto) {
+        List<Integer> Ids = taskRepository.findTaskIdsByProjectId(project_User_Dto.getProjectId());
+        try {
+            for (Integer id : Ids){
+                task_User_Repository.deleteByTask(id);
+            }
+
+            for (Integer id : Ids) {
+                taskRepository.deleteByProjectId(project_User_Dto.getProjectId());
+            }
+
+            return "success";
+        }
+        catch (Exception e) {
+            return "fail";
+        }
+
+    }
+
+
 
 
 }

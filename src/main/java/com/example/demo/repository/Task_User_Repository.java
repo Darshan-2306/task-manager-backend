@@ -20,6 +20,18 @@ public interface Task_User_Repository extends JpaRepository<Task_User, Integer> 
     @Modifying
     @Transactional
     @Query("DELETE FROM Task_User u WHERE u.taskId = :taskId AND u.userId = :userId")
-    Boolean deleteByUserIds(@Param("taskId") int taskId, @Param("userId") int userId);
+    boolean deleteByUserIds(@Param("taskId") int taskId, @Param("userId") int userId);
+
+    @Modifying
+    @Transactional
+    @Query("Delete FROM Task_User u WHERE u.userId = :userId")
+    int deleteByUserId(@Param("userId") int userId);
+
+    @Modifying
+    @Transactional
+    @Query("Delete FROM Task_User u WHERE u.taskId = :taskId")
+    int deleteByTask(@Param("taskId") int taskId);
+
+
 }
 
