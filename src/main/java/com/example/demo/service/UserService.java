@@ -23,10 +23,6 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
-//    public UserService(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
-
 
     public List<User> getAllUsers() {
         return userRepository.findAll();

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -128,6 +129,17 @@ public class Task_User_Controller {
             return "fail";
         }
 
+    }
+
+    @DeleteMapping("/admin/deleteByUserandTask")
+    public String deleteByUserAndTask(@RequestBody Map<String,Integer> UserTask) {
+
+        if((task_User_Repository.deleteByTaskAndUserId(UserTask.get("taskId"),UserTask.get("userId")))>0){
+            return "success";
+        }
+        else{
+            return "fail";
+        }
     }
 
 

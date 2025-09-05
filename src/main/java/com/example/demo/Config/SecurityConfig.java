@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .authorizeHttpRequests(auth-> auth
                         .requestMatchers("/api/auth/signup", "/api/auth/login","/user/my_details","/api/file/upload","/sftp/list","/sftp/upload","/sftp/delete"
-                        ,"/sftp/download","/sftp/download-zip").permitAll()
+                        ,"/sftp/download","/sftp/download-zip","sftp/zip/send-link","sftp/zip/download/{token}").permitAll()
 
                         .requestMatchers("/user/admin/getAllUser","/user/admin/getUser/{id}",
                                 "/user/admin/newUser","/user/admin/updateUser/{id}","/user/admin/deleteUser/{id}","/user/admin/role",
@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/project_user/admin/UserDetail/{projectId}","/project_user/admin/ProjectDetail/{userId}",
                                 "/project_user/admin/add","/project_user/admin/delete","/project_user/admin/deleteByUser","project_user/admin/deleteByProject").hasRole("Admin")
                         .requestMatchers("/task_User/admin/UserDetails/{taskId}","/task_User/admin/TaskDetails/{taskId}",
-                                "/task_User/admin/add","/task_User/admin/deleteByUser","/task_User/admin/deleteByProj").hasRole("Admin")
+                                "/task_User/admin/add","/task_User/admin/deleteByUser","/task_User/admin/deleteByProj","/task_User/admin/deleteByTask","/task_User/admin/deleteByUserandTask").hasRole("Admin")
                         .requestMatchers("/api/email/send").hasRole("Admin")
 
 
