@@ -48,16 +48,12 @@ public class SftpService {
     public void upload(InputStream inputStream, String remoteFileName) throws Exception {
         sftpTemplate.execute(session -> {
             String remotePath = sftpConfig.getRemoteDir() + "/" + remoteFileName;
-
             // Send the inputStream directly to remote path
             session.write(inputStream, remotePath);
-
             System.out.println("Uploaded → " + remotePath);
             return null;
         });
     }
-
-
 
 
     public List<String> listFiles() throws Exception {
