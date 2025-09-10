@@ -92,7 +92,7 @@ public class UserService {
     public User registerUser(User user){
         String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        user.setRole("Trainee");
+        user.setRole("User");
         Optional<User> user1 = userRepository.findByEmail(user.getEmail());
         if(user1.isPresent()){
             return null;
@@ -162,6 +162,34 @@ public class UserService {
     public String getEmailById(int id) {
         return userRepository.findEmailById(id);
     }
+
+    public User loginWithGoogle(String googleId, String email, String name) {
+        //  Check by Google ID
+        Optional<User> optionalUser = userRepository.findByGoogleId(googleId);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        }
+
+        // same email exists
+        Optional<User> existingEmailUser = userRepository.findByEmail(email);
+        if (existingEmailUser.isPresent()) {
+            User user = existingEmailUser.get();
+            user.setGoogleId(googleId);
+            user.setAuthProvider("GOOGLE");
+            return userRepository.save(user);
+        }
+
+        //  new
+        User newUser = new User();
+        newUser.setName(name);
+        newUser.setEmail(email);
+        newUser.setGoogleId(googleId);
+        newUser.setAuthProvider("GOOGLE");
+        newUser.setRole("User");
+        newUser.setPassword(null);
+        return userRepository.save(newUser);
+    }
+
 
 
 

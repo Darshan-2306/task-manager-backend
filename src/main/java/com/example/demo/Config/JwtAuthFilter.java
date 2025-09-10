@@ -33,6 +33,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        if ("/api/auth/google-login".equals(request.getRequestURI())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         Cookie[] cookies = request.getCookies();
         String token = null;
 
@@ -55,10 +60,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken auth =
                             new UsernamePasswordAuthenticationToken(email, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(auth);
-                    System.out.println("Authentication set for: " + email + " with role: " + role);
                 }
             } catch (Exception e) {
-                System.out.println("JWT validation failed: " + e.getMessage());
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json");
                 response.getWriter().write("token invalid");

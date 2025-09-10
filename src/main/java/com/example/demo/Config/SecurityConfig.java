@@ -3,6 +3,7 @@ package com.example.demo.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,7 +29,7 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .authorizeHttpRequests(auth-> auth
                         .requestMatchers("/api/auth/signup", "/api/auth/login","/user/my_details","/api/file/upload","/sftp/list","/sftp/upload","/sftp/delete"
-                        ,"/sftp/download","/sftp/download-zip","sftp/zip/send-link","sftp/zip/download/{token}","/sftp/upload-multiple","/sftp/getAttachedFiles").permitAll()
+                        ,"/sftp/download","/sftp/download-zip","sftp/zip/send-link","sftp/zip/download/{token}","/sftp/upload-multiple","/sftp/getAttachedFiles","/api/auth/google-login").permitAll()
 
                         .requestMatchers("/user/admin/getAllUser","/user/admin/getUser/{id}",
                                 "/user/admin/newUser","/user/admin/updateUser/{id}","/user/admin/deleteUser/{id}","/user/admin/role",

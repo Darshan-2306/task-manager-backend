@@ -70,4 +70,40 @@ public class AuthController {
     }
 
 
+    @PostMapping("/google-login")
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> request, HttpServletResponse response) {
+        try {
+            String googleId = request.get("googleId");
+            String email = request.get("email");
+            String name = request.get("name");
+
+            User user = userService.loginWithGoogle(googleId, email, name);
+
+            String jwt = jwtUtil.generateToken(user.getEmail(), user.getRole());
+
+            ResponseCookie cookie = ResponseCookie.from("access_token", jwt)
+                    .httpOnly(true)
+                    .secure(false) // change to true in production
+                    .path("/")
+                    .maxAge(15 * 60)
+                    .sameSite("Strict")
+                    .build();
+
+            response.addHeader("Set-Cookie", cookie.toString());
+
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("message", "Google login successful");
+            responseBody.put("access_token", jwt);
+            responseBody.put("role", user.getRole());
+
+            return ResponseEntity.ok(responseBody);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Google login failed: " + e.getMessage());
+        }
+    }
+
+
+
+
 }
