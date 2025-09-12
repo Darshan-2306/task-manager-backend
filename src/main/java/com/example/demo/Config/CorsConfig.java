@@ -15,8 +15,10 @@ public class CorsConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(Arrays.asList(
-                "http://localhost:5173",
-                "https://f6b5305df1d9.ngrok-free.app"
+                "http://10.69.111.233.nip.io:3000/",
+                "http://10.69.111.233:3000",
+                "http://localhost:3000",
+                "http://localhost:5173"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowCredentials(true);
